@@ -1,44 +1,31 @@
-#!/usr/bin/python3
-"""Module for valdutf8 method"""
-
-
 def validUTF8(data):
-        """Determine if provided data reps valid UTF-8 encoding
-            Args:
-                    data: list of ints
-                        Returns:
-                                True if valid UTF-8 encoding, otherwise False
-                                    """
-                                        # Number of bytes in the current UTF-8 character
-                                            n_bytes = 0
+        # Number of bytes in the current UTF-8 character
+            n_bytes = 0
 
-                                                # Mask to check if the most significant bit is set or not
-                                                    mask1 = 1 << 7
+                # For each integer in the data array
+                    for num in data:
+                                # Get the binary representation. We only need the least significant 8 bits
+                                        # for any given number, so we discard the rest.
+                                                bin_rep = format(num, '#010b')[-8:]
 
-                                                        # Mask to check if the second most significant bit is set or not
-                                                            mask2 = 1 << 6
-                                                                for num in data:
+                                                        # If this is the case then we are to start processing a new UTF-8 character.
+                                                                if n_bytes == 0:
+                                                                                # Get the number of 1s in the beginning of the string.
+                                                                                            if bin_rep[0] == '0': n_bytes = 0
+                                                                                                        elif bin_rep[0:3] == '110': n_bytes = 1
+                                                                                                                    elif bin_rep[0:4] == '1110': n_bytes = 2
+                                                                                                                                elif bin_rep[0:5] == '11110': n_bytes = 3
+                                                                                                                                            else: return False
 
-                                                                            # Get the number of set most significant bits in the byte if
-                                                                                    # this s the starting byte of an UTF-8 character.
-                                                                                            mask = 1 << 7
-                                                                                                    if n_bytes == 0:
-                                                                                                                    while mask & num:
-                                                                                                                                        n_bytes += 1
-                                                                                                                                                        mask = mask >> 1
+                                                                                                                                                    # Else, we are to account for the remaining bytes if any.
+                                                                                                                                                            else:
+                                                                                                                                                                            # Else, only the least significant 2 bits matter (the 6 rest are to
+                                                                                                                                                                                        # ensure correct formating).
+                                                                                                                                                                                                    if bin_rep[0:2] == '10':
+                                                                                                                                                                                                                        n_bytes -= 1
+                                                                                                                                                                                                                                    else:
+                                                                                                                                                                                                                                                        return False
 
-                                                                                                                                                                    # 1 byte characters
-                                                                                                                                                                                if n_bytes == 0:
-                                                                                                                                                                                                    continue
-
-                                                                                                                                                                                                            # Invalid scenarios according to the rules of the problem.
-                                                                                                                                                                                                                        if n_bytes == 1 or n_bytes > 4:
-                                                                                                                                                                                                                                            return False
-                                                                                                                                                                                                                                                else:
-                                                                                                                                                                                                                                                                # If this byte is a part of an existing UTF-8 character, the we
-                                                                                                                                                                                                                                                                            # simply have to look at the two most significant bits and we make
-                                                                                                                                                                                                                                                                                        # use of the masks we defined before.
-                                                                                                                                                                                                                                                                                                    if not (num & mask1 and not (num & mask2)):
-                                                                                                                                                                                                                                                                                                                        return False
-                                                                                                                                                                                                                                                                                                                            n_bytes -= 1
-                                                                                                                                                                                                                                                                                                                                return n_bytes == 0
+                                                                                                                                                                                                                                                        # This is for the case where we might not have the complete data for
+                                                                                                                                                                                                                                                            # a particular UTF-8 character.
+                                                                                                                                                                                                                                                                return n_bytes == 0
