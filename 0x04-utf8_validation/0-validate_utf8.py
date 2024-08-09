@@ -1,44 +1,40 @@
 #!/usr/bin/python3
-"""Module for valdutf8 method"""
+""" UTF-8 Validation """
 
 
 def validUTF8(data):
-    """Determine if provided data reps valid UTF-8 encoding
-    Args:
-        data: list of ints
-    Returns:
-        True if valid UTF-8 encoding, otherwise False
     """
-    # Number of bytes in the current UTF-8 character
-    n_bytes = 0
+    Method that determines if a given data set represents a valid
+    UTF-8 encoding.
+    """
+    number_bytes = 0
 
-    # Mask to check if the most significant bit is set or not
-    mask1 = 1 << 7
+    mask_1 = 1 << 7
+    mask_2 = 1 << 6
 
-    # Mask to check if the second most significant bit is set or not
-    mask2 = 1 << 6
-    for num in data:
+    for i in data:
 
-        # Get the number of set most significant bits in the byte if
-        # this s the starting byte of an UTF-8 character.
-        mask = 1 << 7
-        if n_bytes == 0:
-            while mask & num:
-                n_bytes += 1
-                mask = mask >> 1
+        mask_byte = 1 << 7
 
-                # 1 byte characters
-                if n_bytes == 0:
-                    continue
+        if number_bytes == 0:
 
-                # Invalid scenarios according to the rules of the problem.
-                if n_bytes == 1 or n_bytes > 4:
+            while mask_byte & i:
+                number_bytes += 1
+                mask_byte = mask_byte >> 1
+
+            if number_bytes == 0:
+                continue
+
+            if number_bytes == 1 or number_bytes > 4:
+                return False
+
+        else:
+            if not (i & mask_1 and not (i & mask_2)):
                     return False
-                else:   
-                    # If this byte is a part of an existing UTF-8 character, the we
-                    # simply have to look at the two most significant bits and we make
-                    # use of the masks we defined before.
-                    if not (num & mask1 and not (num & mask2)):
-                        return False
-                    n_bytes -= 1
-                    return n_bytes == 0
+
+        number_bytes -= 1
+
+    if number_bytes == 0:
+        return True
+
+    return False
