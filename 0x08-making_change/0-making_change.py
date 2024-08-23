@@ -1,23 +1,24 @@
 #!/usr/bin/python3
-"""A function to determine the fewest number of coins needed 
-to meet a given amount total"""
+
+""" Contains makeChange function"""
 
 
 def makeChange(coins, total):
-    """This function will take a list of coins and use
-    that to calculate how much change the total will require
     """
+    Returns: fewest number of coins needed to meet total
+    If total is 0 or less, return 0
+    If total cannot be met by any number of coins you have, return -1
+    """
+    if not coins or coins is None:
+        return -1
     if total <= 0:
         return 0
-
-    else:
-        coin = sorted(coins)
-        coin.reverse()
-        counter = 0
-        for i in coin:
-            while(total >= i):
-                counter += 1
-                total -= i
-                if total == 0:
-                    return counter
-                return -1
+    change = 0
+    coins = sorted(coins)[::-1]
+    for coin in coins:
+        while coin <= total:
+            total -= coin
+            change += 1
+            if (total == 0):
+                return change
+            return -1
