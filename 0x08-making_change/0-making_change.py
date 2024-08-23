@@ -3,7 +3,7 @@
    to meet a given amount total"""
 
 
-   def makeChange(coins, total):
+def makeChange(coins, total):
    """This function will take a list of coins and use
    that to calculate how much change the total will require
    """
