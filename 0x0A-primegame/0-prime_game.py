@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""0. Prime Game - Maria and Ben are playing a game""""
+"""0. Prime Game - Maria and Ben are playing a game"""
 
 
 def isWinner(x, nums):
@@ -9,7 +9,7 @@ def isWinner(x, nums):
     if x <= 0 or nums is None:
         return None
     if x != len(nums):
-    return None
+        return None
 
     ben = 0
     maria = 0
@@ -24,7 +24,7 @@ def isWinner(x, nums):
             ben += 1
         else:
             maria += 1
-    if ben > maria
+    if ben > maria:
         return "Ben"
     if maria > ben:
         return "Maria"
